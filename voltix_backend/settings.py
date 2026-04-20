@@ -66,9 +66,10 @@ WSGI_APPLICATION = 'voltix_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'voltix_db',
+        'NAME': 'Voltix_DB',
+        'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': mongodb+srv://kritagya:<db_password>@cluster0.crpzg9r.mongodb.net/?appName=Cluster0 
+            'host': 'mongodb+srv://kritagya:YOUR_REAL_PASSWORD@cluster0.crpzg9r.mongodb.net/?appName=Cluster0',
         }
     }
 }
