@@ -121,3 +121,5 @@ import os
 # Where files are stored on your computer
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+import os
+PORT = os.environ.get('PORT', '8000')
