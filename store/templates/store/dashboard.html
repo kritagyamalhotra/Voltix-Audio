@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voltix Manager Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f3; padding: 40px; }
+        .container { background: white; padding: 30px; border-radius: 15px; max-width: 800px; margin: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .stats { display: flex; justify-content: space-around; margin-bottom: 20px; }
+        .stat-box { text-align: center; background: #3498db; color: white; padding: 15px; border-radius: 8px; width: 40%; }
+        canvas { max-width: 400px; margin: 20px auto; }
+        
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; color: #333; }
+        .sentiment-tag { padding: 5px 10px; border-radius: 20px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; }
+        .positive { background: #d4edda; color: #155724; }
+        .negative { background: #f8d7da; color: #721c24; }
+        .neutral { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Voltix Audio - Manager Insights</h1>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <h3>{{ total_products }}</h3>
+                <p>Total Products</p>
+            </div>
+            <div class="stat-box" style="background: #2ecc71;">
+                <h3>{{ total_reviews }}</h3>
+                <p>Total Reviews Analyzed</p>
+            </div>
+        </div>
+
+        <hr>
+        
+        <div style="text-align: center;">
+            <h3>Customer Sentiment Distribution (AI)</h3>
+            <canvas id="sentimentChart"></canvas>
+        </div>
+
+        <hr>
+
+        <h3>Recent Customer Feedback</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Customer Comment</th>
+                    <th>AI Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for review in reviews %}
+                <tr>
+                    <td><strong>{{ review.product.name }}</strong></td>
+                    <td>"{{ review.comment }}"</td>
+                    <td>
+                        <span class="sentiment-tag {{ review.sentiment|lower }}">
+                            {{ review.sentiment }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" style="text-align:center;">No reviews analyzed yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="/admin" style="color: #3498db; text-decoration: none;">← Back to Admin Panel</a>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('sentimentChart').getContext('2d');
+        const sentimentChart = new Chart(ctx, {
+            type: 'doughnut', // Changed to doughnut for a modern look
+            data: {
+                labels: {{ chart_data.labels|safe }},
+                datasets: [{
+                    data: {{ chart_data.values|safe }},
+                    backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c'],
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+<div style="text-align: right;">
+    <span class="text-muted small">Logged in as: {{ user.username }}</span> | 
+    <a href="{% url 'logout' %}" style="color: #ce2132ff; text-decoration: none; font-weight: bold;">Logout</a>
+</div>
