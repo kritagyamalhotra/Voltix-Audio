@@ -1,13 +1,13 @@
+from django.contrib import admin
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib import admin
-from django.urls import path, include # Make sure 'include' is here
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('store.urls')), # This tells Django to look in your store app for the home page
+    path('', include('store.urls')),
 ]
 
-# Add this at the end to allow image viewing during development
+# This is the part that was causing the error because 'settings' wasn't imported
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
